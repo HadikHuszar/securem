@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Securem Booking</title>
+  <style>
+    /* Base styles - mobile first */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #0d1b24;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 1rem;
+      line-height: 1.6;
+      -webkit-text-size-adjust: 100%;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .logo-container {
+      align-items: center;
+      margin-bottom: -2rem;
+      z-index: 10;
+    }
+
+    .logo {
+      height: clamp(60px, 8vh, 10em);
+      width: auto;
+      max-width: 200px;
+    }
+
+    .container {
+      background-color: #102a36;
+      padding: clamp(1.5rem, 4vw, 2rem);
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: min(90vw, 600px);
+      margin: 0 auto;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      font-weight: 700;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+    }
+
+    label .required {
+      color: #ea0f1e;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: clamp(0.65rem, 2vw, 0.75rem);
+      margin-bottom: 1.5rem;
+      border-radius: 8px;
+      border: 2px solid transparent;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      background: #2d3c46;
+      color: #faebd7;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+
+    /* Enhanced focus states for accessibility */
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #ea0f1e;
+      box-shadow: 0 0 0 3px rgba(234, 15, 30, 0.1);
+      background: #3a4a55;
+    }
+
+    /* Textarea specific styles */
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      font-family: inherit;
+    }
+
+    /* Select dropdown styling */
+    select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23faebd7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      padding-right: 40px;
+    }
+
+    /* Date picker styling */
+    input[type="date"] {
+      position: relative;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      filter: invert(1) brightness(0.8);
+      padding: 4px;
+      margin-left: 8px;
+    }
+
+    /* Button styling - mobile first */
+    button {
+      background-color: transparent;
+      border: 2px solid #ea0f1e;
+      color: #faebd7;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      padding: clamp(0.75rem, 2vw, 0.75rem) clamp(1.5rem, 4vw, 1.5rem);
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      font-family: inherit;
+      width: 100%;
+      min-height: 48px; /* Minimum touch target */
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:hover {
+      background-color: #ea0f1e;
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(234, 15, 30, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .arrow {
+      display: inline-block;
+      width: 0;
+      margin-left: 0;
+      transition: all 0.3s ease;
+      opacity: 0;
+      white-space: nowrap;
+    }
+
+    button:hover .arrow {
+      width: 20px;
+      margin-left: 8px;
+      opacity: 1;
+    }
+
+    .date-info {
+      font-size: clamp(0.8rem, 2vw, 0.9rem);
+      color: #888;
+      margin-top: -1rem;
+      margin-bottom: 1rem;
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    #securem-logo {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      width: clamp(100px, 12vw, 150px);
+      height: auto;
+      z-index: 10;
+      pointer-events: auto;
+      transition: all 0.3s ease;
+    }
+
+    /* Modal styles - responsive */
+    #confirmation-modal {
+      position: fixed;
+      top: 0; 
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 1rem;
+    }
+
+    .modal-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      position: relative;
+      background: #1f3b4d;
+      color: #fff;
+      padding: clamp(1.5rem, 4vw, 2rem);
+      border-radius: 12px;
+      text-align: center;
+      z-index: 10000;
+      max-width: min(90vw, 400px);
+      width: 100%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      transform: scale(1);
+      transition: all 0.3s ease;
+    }
+
+    .modal-content h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: #7cfcc1;
+      font-size: clamp(1.2rem, 3vw, 1.5rem);
+    }
+
+    .modal-content p {
+      margin-bottom: 0;
+      font-size: clamp(0.9rem, 2.5vw, 1rem);
+      line-height: 1.5;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #fff;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+
+    /* Error states */
+    input:invalid {
+      border-color: #ea0f1e;
+    }
+
+    input:invalid:focus {
+      box-shadow: 0 0 0 3px rgba(234, 15, 30, 0.2);
+    }
+
+    /* Loading state */
+    .loading {
+      position: relative;
+      pointer-events: none;
+    }
+
+    .loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      margin: -10px 0 0 -10px;
+      border: 2px solid transparent;
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Tablet styles */
+    @media (min-width: 768px) {
+      body {
+        padding: 2rem;
+      }
+
+      .logo-container {
+        margin-bottom: -3rem;
+      }
+
+      .container {
+        padding: 2rem;
+      }
+
+      button {
+        width: auto;
+        min-width: 160px;
+      }
+
+      #securem-logo {
+        top: 20px;
+        left: 20px;
+      }
+    }
+
+    /* Desktop styles */
+    @media (min-width: 1024px) {
+      .container {
+        max-width: 600px;
+      }
+
+      .modal-content {
+        max-width: 400px;
+      }
+    }
+
+    /* Landscape phone optimization */
+    @media (max-height: 500px) and (orientation: landscape) {
+      body {
+        padding: 0.5rem;
+      }
+
+      .logo-container {
+        margin-bottom: -1rem;
+      }
+
+      .container {
+        padding: 1rem;
+        margin: 0.5rem auto;
+      }
+
+      h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+      }
+
+      input, select, textarea {
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+      }
+
+      .modal-content {
+        padding: 1rem;
+      }
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      input, select, textarea {
+        border: 2px solid #fff;
+      }
+
+      button {
+        border-width: 3px;
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      button:hover {
+        transform: none;
+      }
+    }
+
+    /* Touch device optimizations */
+    @media (hover: none) and (pointer: coarse) {
+      button:hover {
+        background-color: transparent;
+        color: #faebd7;
+        transform: none;
+        box-shadow: none;
+      }
+
+      button:active {
+        background-color: #ea0f1e;
+        color: #fff;
+        transform: scale(0.98);
+      }
+
+      .close-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: none;
+      }
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        background: white;
+        color: black;
+      }
+
+      .container {
+        background: white;
+        box-shadow: none;
+        border: 1px solid black;
+      }
+
+      button, #securem-logo {
+        display: none;
+      }
+
+      input, select, textarea {
+        background: white;
+        color: black;
+        border: 1px solid black;
+      }
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LdiyZQrAAAAAJZ6ckm4es4IygKafTp07sk9ZZQL"></script>
+</head>
+<body>
+
+  <div class="logo-container">
+    <a href="index.html">
+      <img src="securem_logo_white.svg" alt="Securem Logo" id="securem-logo" />
+    </a>
+  </div>
+  
+  <div class="container">
+    <h2>Book a Time and Let&rsquo;s Chat</h2>
+    <form action="https://formspree.io/f/mdkdzqvg" method="POST" id="bookingForm">
+      <label for="first_name">First Name <span class="required">*</span></label>
+      <input type="text" name="first_name" id="first_name" required autocomplete="given-name" />
+
+      <label for="last_name">Last Name <span class="required">*</span></label>
+      <input type="text" name="last_name" id="last_name" required autocomplete="family-name" />
+
+      <label for="email">Email Address <span class="required">*</span></label>
+      <input type="email" name="email" id="email" required autocomplete="email" />
+
+      <label for="company">Company Name <span class="required">*</span></label>
+      <input type="text" name="company" id="company" required autocomplete="organization" />
+
+      <label for="message">What would you like to discuss? <span class="required">*</span></label>
+      <textarea name="message" id="message" rows="4" required placeholder="Please describe what you'd like to discuss..."></textarea>
+
+      <label for="date">Select a date <span class="required">*</span></label>
+      <input type="date" name="date" id="date" min="2025-07-30" required />
+      <div class="date-info">Note: Weekends are not available for booking</div>
+
+      <label for="time">Select a time <span class="required">*</span></label>
+      <select name="time" id="time" required>
+        <option value="">Choose a time slot...</option>
+      </select>
+
+      <input type="hidden" name="timezone" id="timezone" />
+      <button type="submit" id="submitBtn">
+        Submit <span class="arrow">→</span>
+      </button>
+    </form>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmation-modal">
+    <div class="modal-overlay" onclick="closeModal()"></div>
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()" aria-label="Close">&times;</span>
+      <h3>Thank you!</h3>
+      <p>Your appointment request has been received. We'll be in touch shortly to confirm your booking.</p>
+    </div>
+  </div>
+
+  <script>
+    // Enhanced form handling with mobile optimizations
+    (function() {
+      const timeSelect = document.getElementById('time');
+      const timezoneInput = document.getElementById('timezone');
+      const dateInput = document.getElementById('date');
+      const form = document.getElementById('bookingForm');
+      const submitBtn = document.getElementById('submitBtn');
+
+      // Set timezone
+      timezoneInput.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      // Populate time options (9:00 AM to 4:30 PM)
+      const times = [];
+      for (let hour = 9; hour <= 16; hour++) {
+        ['00', '30'].forEach(min => {
+          if (!(hour === 16 && min === '30')) { // Don't include 4:30 PM
+            const time = `${hour.toString().padStart(2, '0')}:${min}`;
+            const display = formatTime(hour, min);
+            times.push({ value: time, display });
+          }
+        });
+      }
+
+      times.forEach(time => {
+        const option = document.createElement('option');
+        option.value = time.value;
+        option.textContent = time.display;
+        timeSelect.appendChild(option);
+      });
+
+      function formatTime(hour, min) {
+        const period = hour >= 12 ? 'PM' : 'AM';
+        const displayHour = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+        return `${displayHour}:${min} ${period}`;
+      }
+
+      // Enhanced date validation
+      function isWeekend(dateString) {
+        const date = new Date(dateString + 'T00:00:00');
+        const day = date.getDay();
+        return day === 0 || day === 6; // Sunday = 0, Saturday = 6
+      }
+
+      function validateDate() {
+        const selectedDate = dateInput.value;
+        
+        if (!selectedDate) {
+          dateInput.setCustomValidity("Please select a valid date.");
+          return false;
+        }
+        
+        if (isWeekend(selectedDate)) {
+          dateInput.setCustomValidity("Weekends are not available. Please select a weekday (Monday-Friday).");
+          return false;
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const selected = new Date(selectedDate + 'T00:00:00');
+        
+        if (selected < today) {
+          dateInput.setCustomValidity("Please select a future date.");
+          return false;
+        }
+
+        dateInput.setCustomValidity("");
+        return true;
+      }
+
+      // Enhanced email validation
+      function validateEmail() {
+        const emailInput = document.getElementById('email');
+        const emailValue = emailInput.value.trim();
+        
+        if (!emailValue) {
+          emailInput.setCustomValidity("Please enter an email address.");
+          return false;
+        }
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (!emailRegex.test(emailValue)) {
+          emailInput.setCustomValidity("Please enter a valid email address (e.g., name@company.com).");
+          return false;
+        }
+        
+        emailInput.setCustomValidity("");
+        return true;
+      }
+
+      // Real-time validation
+      document.getElementById('email').addEventListener('input', validateEmail);
+      document.getElementById('email').addEventListener('blur', validateEmail);
+      dateInput.addEventListener('change', validateDate);
+      dateInput.addEventListener('blur', validateDate);
+
+      // Set minimum date to next available weekday
+      function setMinimumDate() {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        
+        let minDate = tomorrow;
+        while (minDate.getDay() === 0 || minDate.getDay() === 6) {
+          minDate.setDate(minDate.getDate() + 1);
+        }
+        
+        dateInput.min = minDate.toISOString().split('T')[0];
+      }
+
+      // Modal functions
+      window.showModal = function() {
+        const modal = document.getElementById('confirmation-modal');
+        modal.style.display = 'flex';
+        // Prevent body scroll when modal is open
+        document.body.style.overflow = 'hidden';
+        
+        // Focus management for accessibility
+        const closeBtn = modal.querySelector('.close-btn');
+        closeBtn.focus();
+      }
+
+      window.closeModal = function() {
+        const modal = document.getElementById('confirmation-modal');
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+      }
+
+      // Enhanced form submission with loading state
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Validate all fields
+        const isDateValid = validateDate();
+        const isEmailValid = validateEmail();
+        
+        if (!form.checkValidity() || !isDateValid || !isEmailValid) {
+          form.reportValidity();
+          return;
+        }
+
+        // Show loading state
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+
+        const formData = new FormData(form);
+
+        // Enhanced error handling
+        const submitForm = (token) => {
+          if (token) {
+            formData.append('g-recaptcha-response', token);
+          }
+
+          fetch(form.action, {
+            method: form.method,
+            body: formData,
+            headers: {
+              'Accept': 'application/json'
+            }
+          }).then(response => {
+            if (response.ok) {
+              form.reset();
+              showModal();
+              // Reset min date after form reset
+              setMinimumDate();
+            } else {
+              throw new Error('Network response was not ok');
+            }
+          }).catch(error => {
+            console.error('Error:', error);
+            alert("Sorry, there was an error submitting your request. Please try again or contact us directly.");
+          }).finally(() => {
+            // Reset button state
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Submit <span class="arrow">→</span>';
+          });
+        };
+
+        // Try to use reCAPTCHA if available, otherwise submit without it
+        if (typeof grecaptcha !== 'undefined' && grecaptcha.ready) {
+          grecaptcha.ready(function() {
+            grecaptcha.execute('6LdiyZQrAAAAAJZ6ckm4es4IygKafTp07sk9ZZQL', { action: 'submit' })
+              .then(submitForm)
+              .catch(() => {
+                // Fallback to submission without reCAPTCHA
+                submitForm(null);
+              });
+          });
+        } else {
+          // Submit without reCAPTCHA if it's not available
+          submitForm(null);
+        }
+      });
+
+      // Keyboard navigation for modal
+      document.addEventListener('keydown', function(e) {
+        const modal = document.getElementById('confirmation-modal');
+        if (modal.style.display === 'flex' && e.key === 'Escape') {
+          closeModal();
+        }
+      });
+
+      // Initialize
+      setMinimumDate();
+
+      // Prevent zoom on iOS when focusing inputs
+      if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+          input.addEventListener('focus', function() {
+            if (parseFloat(input.style.fontSize) < 16) {
+              input.style.fontSize = '16px';
+            }
+          });
+        });
+      }
+
+      console.log('Enhanced booking form initialized with mobile optimizations');
+    })();
+  </script>
+
+</body>
+</html>
