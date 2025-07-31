@@ -211,6 +211,17 @@
       }
     }
 
+    /* Mobile line break control */
+      .mobile-break {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .mobile-break {
+          display: block;
+        }
+      }
+
     /* Landscape orientation on mobile */
     @media (max-height: 500px) and (orientation: landscape) {
       .container {
@@ -295,8 +306,8 @@
   <!-- Main content container -->
   <div class="container">
     <h1>Secured by Design<span class="red-dot">.</span><br /><span class="brand-grey">Engineered to Protect</span><span class="red-dot">.</span></h1>
-    <p>No clients named. No credentials flashed.<br />Just elite, engineered defense — purpose-built, quietly deployed.</p>
-    <button class="cta-button fancy-arrow" onclick="window.location.href='book.html'">
+    <p>No clients named. No credentials flashed.<br />Just elite, engineered defense —<br class="mobile-break"> purpose-built, quietly deployed.</p>
+    <button class="cta-button fancy-arrow" onclick="window.location.href='book.html'" style="pointer-events: all; z-index: 20;">
       Let&rsquo;s Connect.
     </button>
   </div>

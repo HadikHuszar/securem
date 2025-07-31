@@ -835,7 +835,22 @@ function createProceduralTexture() {
     ctx.font = `900 ${fontSize}px Helvetica Neue, Arial Black, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('YOUR PROJECT', canvas.width / 2, canvas.height * 0.35);
+    
+    // Mobile detection for positioning
+    const isMobile = window.innerWidth <= 768;
+    const isTablet = window.innerWidth > 768 && window.innerWidth <= 1024;
+
+    // Adjust position based on device
+    let yPosition;
+    if (isMobile) {
+        yPosition = canvas.height * 0.25; // Higher up on mobile
+    } else if (isTablet) {
+        yPosition = canvas.height * 0.30; // Slightly higher on tablet  
+    } else {
+        yPosition = canvas.height * 0.35; // Original desktop position
+    }
+
+    ctx.fillText('YOUR PROJECT', canvas.width / 2, yPosition);
     
     // Create texture from canvas
     let texture = gl.createTexture();
