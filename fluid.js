@@ -1101,25 +1101,25 @@ $('body').one( 'touchstart', e => {
 });  
 
 window.addEventListener('touchstart', e => {
-    e.preventDefault();
-    const touches = e.targetTouches;
-    let pointer = pointers[0];
-    for (let i = 0; i < touches.length; i++) {
-      let posX = scaleByPixelRatio(touches[i].clientX);
-      let posY = scaleByPixelRatio(touches[i].clientY);  
-      updatePointerDownData(pointer, touches[i].identifier, posX, posY);
-      clickSplat(pointer);
+    // e.preventDefault();
+    // const touches = e.targetTouches;
+    // let pointer = pointers[0];
+    // for (let i = 0; i < touches.length; i++) {
+    //   let posX = scaleByPixelRatio(touches[i].clientX);
+    //   let posY = scaleByPixelRatio(touches[i].clientY);  
+    //   updatePointerDownData(pointer, touches[i].identifier, posX, posY);
+    //   clickSplat(pointer);
     }
 }, { passive: false });
 
 window.addEventListener('touchmove', e => {
-    e.preventDefault();
-    const touches = e.targetTouches;
-    let pointer = pointers[0];
-    for (let i = 0; i < touches.length; i++) {
-      let posX = scaleByPixelRatio(touches[i].clientX);
-      let posY = scaleByPixelRatio(touches[i].clientY);
-      updatePointerMoveData(pointer, posX, posY, pointer.color);
+    // e.preventDefault();
+    // const touches = e.targetTouches;
+    // let pointer = pointers[0];
+    // for (let i = 0; i < touches.length; i++) {
+    //   let posX = scaleByPixelRatio(touches[i].clientX);
+    //   let posY = scaleByPixelRatio(touches[i].clientY);
+    //   updatePointerMoveData(pointer, posX, posY, pointer.color);
   }   
 }, { passive: false });
 
